@@ -9,6 +9,17 @@ db = client['subscriptiondb']
 subsCollection = db['subscriptions']
 subtypesCollection = db['subscriptiontypes']
 
+def initialize_subscription_types():
+    if subtypesCollection.find_one({"id": 1}):
+        return
+    subscription_type = {
+        "id": 1,
+        "name": "Basic",
+        "price": 99,
+        "description": "Watch all on demand videos"
+    }
+    subtypesCollection.insert_one(subscription_type)
+
 @app.route('/')
 def index():
     return 'Welcome to the Subscriptions API!'
@@ -62,6 +73,8 @@ def check_subscription(user_id):
         return jsonify({"msg": "User does not have an active subscription"}), 404
 
     return jsonify({"msg": "User has an active subscription"}), 200
+
+initialize_subscription_types()
 
 if __name__ == "__main__":
     app.run(debug=True)
