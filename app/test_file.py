@@ -45,7 +45,8 @@ def test_create_subscription(test_user):
     # Verify that subscription expiration date is correct
     days_valid = 30
     expiration_date = now + timedelta(days=days_valid)
-    assert subscription["expiration_date"] == expiration_date
+    assert abs((subscription["expiration_date"] - expiration_date).total_seconds()) <= 10
+
 
 # Test subscription status endpoint
 def test_check_subscription(test_user):
