@@ -11,14 +11,15 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./mongo_subs:/data/db
-
+      - mongo_subs:/data/db
   subscriptions:
     build: .
     restart: always
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       - mongo_subscriptions
     environment:
       MONGO_URI: "mongodb://root:root@mongo_subscriptions:27017"
+volumes:
+  mongo_subs:

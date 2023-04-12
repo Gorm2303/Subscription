@@ -2,12 +2,13 @@ import pytest
 import json
 from datetime import datetime, timedelta
 from pymongo import MongoClient
+import os
 
 from app import app
 
 @pytest.fixture
 def test_user():
-    client = MongoClient("mongodb+srv://admin:admin@cluster0.acahawh.mongodb.net/?retryWrites=true&w=majority")
+    client = MongoClient(os.environ.get("MONGO_URI"))
     db = client["subscriptiondb"]
     subsCollection = db["subscriptions"]
     subsCollection.delete_many({"user_id": "test_user"})
@@ -36,7 +37,7 @@ def test_create_subscription(test_user):
     })
     # Verify that subscription was created
     now = datetime.utcnow()
-    client = MongoClient("mongodb+srv://admin:admin@cluster0.acahawh.mongodb.net/?retryWrites=true&w=majority")
+    client = MongoClient(os.environ.get("MONGO_URI"))
     db = client["subscriptiondb"]
     subsCollection = db["subscriptions"]
     subscription = subsCollection.find_one({"user_id": "test_user", "expiration_date": {"$gt": now}})
