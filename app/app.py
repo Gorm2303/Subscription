@@ -76,5 +76,5 @@ def check_subscription(user_id):
 
 initialize_subscription_types()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True, ssl_context=None)
