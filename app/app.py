@@ -74,7 +74,23 @@ def check_subscription(user_id):
 
     return jsonify({"msg": "User has an active subscription"}), 200
 
+# Cancel a subscription
+@app.route("/subscriptions/<user_id>/cancel", methods=["PUT"])
+def cancel_subscription(user_id):
+    # Query for user's active subscription
+    now = datetime.utcnow()
+    subscription = subsCollection.find_one({"user_id": user_id, "expiration_date": {"$gt": now}})
+
+    if not subscription:
+        return jsonify({"msg": "User does not have an active subscription"}), 404
+
+    # Update the subscription expiration date to now, effectively canceling it
+    subsCollection.update_one({"_id": subscription["_id"]}, {"$set": {"expiration_date": now}})
+
+    return jsonify({"msg": "Subscription has been cancelled"}), 200
+
+
 initialize_subscription_types()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True, ssl_context=None)
